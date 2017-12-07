@@ -13,7 +13,6 @@ init();
 // Take in user input
 
 function init() {
-  
   inquirer
     .prompt({
       name: "letter",
