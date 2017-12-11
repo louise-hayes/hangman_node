@@ -3,7 +3,7 @@ var inquirer = require("inquirer");
 var Words = require("./word.js");
 
 
-var userword = ["_", "_", "_"];
+
 var match = false;
 var wins = 0;
 var lettersMatched = 0;
@@ -11,6 +11,8 @@ var lettersMatched = 0;
 init();
 
 // Take in user input
+//PickRandomWord
+    
 
 function init() {
   inquirer
@@ -20,8 +22,8 @@ function init() {
       message: "Guess a Letter"
     })
     .then(function (answer) {
-    
-      var testword = "BEN";
+        words.pickword(testword);
+
       match = false;
       var userletter = answer.letter.toUpperCase();
 
