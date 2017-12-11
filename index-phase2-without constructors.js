@@ -1,37 +1,44 @@
 var inquirer = require("inquirer");
-var Words = require("./word.js");
-var Letters = require("./letters.js");
-
 // variables ***************************************
 
-var wordsArray = ["PICTURE", "SUNNY", "ADAM", "BEN", "CODERSROCK", "OISIN"];
+var wordsArray = ["picture", "sunny", "adam", "ben", "codersrock", "oisin"];
 var guessWord;
 var lettersUsed = [];
 var winCntr = 0;
 const totalGuesses = 10;
 var guessesRemaining = totalGuesses;
+
+// .split --will split the string into an array using what ever seperator you specify, in this case '' blank, so everything is seperated
+//come back to this to present user with a visual of alphabet
+// var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+// console.log(alphabet);
+
+var letter = "";
 var hasWon = 0;
 var randomWord;
-
 //Functions *****************************************
 
 //  find a random word from the wordsArray. Returns a random word
+function pickword() {
+    var randNo = Math.floor(Math.random() * wordsArray.length);
+    var chosenWord = wordsArray[randNo];
+    return chosenWord;
+}
 
 // return event - the letter!
 function checkLetter(letter) {
     if (guessesRemaining !== 0) {
-        // console.log(letter);
+        //console.log(letter);
         var posIndex = 0;
+        // console.log(" Number of Wins: " + winCntr);
+        // console.log("Guesses Remaining: " + guessesRemaining);
 
-        // if (lettersUsed.indexOf(letter) == -1 || (guessesRemaining === totalGuesses)) {
+        if (lettersUsed.indexOf(letter) == -1 || (guessesRemaining === totalGuesses)) {
 
-        //     //console.log("letter not typed already or first time" + lettersUsed.indexOf(letter));
-        // }
-
+            //console.log("letter not typed already or first time" + lettersUsed.indexOf(letter));
+        }
         IsLetterInRandomWord(letter, 0);
-        
         showGuess();
-
         lettersUsed.push(letter);
 
     }
@@ -118,13 +125,10 @@ function getUserLetter() {
             name: "letter",
             type: "input",
             message: "Make a guess by typing in any letter!"
-    
         })
         .then(function (answer) {
-            var userLetter = new Letters(answer.letter);
-            var uppercaseletter = userLetter.toUpperLetter();
-            console.log(uppercaseletter);
-            checkLetter(uppercaseletter);
+            var userLetter = answer.letter;
+            checkLetter(userLetter);
             // console.log("chosen random word is " + randomWord);
             // populate guessWord with dashes 
 
@@ -141,9 +145,7 @@ function init() {
     lettersUsed = [];
     letter = "";
     guessesRemaining = totalGuesses;
-    var randomwordFunc = new Words(wordsArray);
-    randomWord = randomwordFunc.pickWord();
-
+    randomWord = pickword();
     // console.log("chosen random word is " + randomWord);
     console.log(" Number of Wins: " + winCntr);
 

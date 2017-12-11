@@ -10,10 +10,6 @@ var lettersUsed = [];
 var winCntr = 0;
 const totalGuesses = 10;
 var guessesRemaining = totalGuesses;
-
-
-
-
 var hasWon = 0;
 var randomWord;
 //Functions *****************************************
@@ -121,6 +117,7 @@ function getUserLetter() {
             name: "letter",
             type: "input",
             message: "Make a guess by typing in any letter!"
+    
         })
         .then(function (answer) {
             var userLetter = new Letters(answer.letter);
