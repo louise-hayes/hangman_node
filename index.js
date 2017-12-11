@@ -1,82 +1,159 @@
-// hangman game in node using inquirer npm packages and constructors
 var inquirer = require("inquirer");
-// var gameWord = require("./word.js");
-//this will be populated in a constructor function pickWord
-var userWord = ["_", "_", "_", " ", "_", "_", "_", "_", "_"];
-var flagMatch = false; //if True - if they get the letter right, a message will display to user you are correct
-var cntrWins = 0; //incremented each time they get a phrase corretct
-var cntrLettersMatched = 0; //this counter will be set to length of the phrase to determine how many times we prompt fuser or a letter 
+// variables ***************************************
+
+var wordsArray = ["picture", "sunny", "adam", "ben", "codersrock", "oisin"];
+var guessWord;
 var lettersUsed = [];
-const totalGuesses = 8;
+var winCntr = 0;
+const totalGuesses = 10;
 var guessesRemaining = totalGuesses;
 
-init(); //call the game function
+// .split --will split the string into an array using what ever seperator you specify, in this case '' blank, so everything is seperated
+//come back to this to present user with a visual of alphabet
+// var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+// console.log(alphabet);
 
-// prompt for user letter - and accept user letter
-console.log(userWord);
+var letter = "";
+var hasWon = 0;
+var randomWord;
+//Functions *****************************************
 
-function init() {
+//  find a random word from the wordsArray. Returns a random word
+function pickword() {
+    var randNo = Math.floor(Math.random() * wordsArray.length);
+    var chosenWord = wordsArray[randNo];
+    return chosenWord;
+}
 
-  inquirer
-    .prompt({
-      name: "letter",
-      type: "input",
-      message: "Make a guess by typing in any letter!"
-    })
-    .then(function (answer) {
+// return event - the letter!
+function checkLetter(letter) {
+    if (guessesRemaining !== 0) {
+        //console.log(letter);
+        var posIndex = 0;
+        // console.log(" Number of Wins: " + winCntr);
+        // console.log("Guesses Remaining: " + guessesRemaining);
 
+        if (lettersUsed.indexOf(letter) == -1 || (guessesRemaining === totalGuesses)) {
 
-      // if (lettersUsed.indexOf(answer.letter) == -1 || (guessesRemaining === totalGuesses)) {
-
-      //   console.log("letter not typed already or first time" + lettersUsed.indexOf(answer.letter));
-      // }
-
-      // IsLetterInRandomWord(letter, 0);
-      // showGuess();
-      // lettersUsed.push(letter);
-
-      //this will be chosen in a constructor function
-      //if it has alread been entered ignore this
-      var testword = "BEN HAYES";
-
-      match = false;
-      var userLetter = answer.letter.toUpperCase();
-
-      if (!(testword.indexOf(userLetter) == -1)) {
-
-        for (var i = 0; i < testword.length; i++) { //loop until length of word and check if user letter is in game word
-
-          if (userLetter === testword[i]) {
-            var index = testword.indexOf(userLetter, i);
-            userWord[index] = userLetter;
-            console.log(index + " " + userWord[index]);
-            console.log("You are correct " + userWord);
-            match = true;
-
-            cntrLettersMatched++; //when this is same as word length we stop asking for letter
-
-            if (cntrLettersMatched === testword.length) {
-              console.log("you win..Here is the next round..");
-              userWord = ["_", "_", "_", " ", "_", "_", "_", "_", "_"];
-
-
-            };
-            // correctAns();
-          } //end if match
-          //eitherway check if max tries is reached and if not max tries 
-          // (which is length of word) then call init again to repeat        
-        }; //end for
-
-        if (!(match)) {
-          console.log("incorrect " + userword);
+            //console.log("letter not typed already or first time" + lettersUsed.indexOf(letter));
         }
-        if (!(i === testword.length - 1)) {
+        IsLetterInRandomWord(letter, 0);
+        showGuess();
+        lettersUsed.push(letter);
 
-          init();
+    }
+
+}
+// Is player letter in randomWord
+function IsLetterInRandomWord(letter, checkIndex) {
+    // check for falsey which is if its first letter of the randomWord so index 0
+
+    if (checkIndex < randomWord.length && randomWord.indexOf(letter, checkIndex) !== -1) {
+
+        // letter is in the randomWord
+        // console.log("Correct!");
+        // Populate the guessed letter into the guessWord in right position
+
+        // if a letter is in the array twice you must place it twic so
+        // so you need to check is this letter in the random word more than once
+        // recursive function - if match call itself again and pass another arg called position and use that to check with that position until its false.
+        // 
+        checkIndex = randomWord.indexOf(letter, checkIndex);
+        // console.log("letter " + "checkIndex " + checkIndex);
+        guessWord[checkIndex] = letter;
+
+        //check if it is in the word multiple times in guessWorda recursive function 
+
+
+        IsLetterInRandomWord(letter, checkIndex + 1);
+        return true;
+    } else if (guessesRemaining == 1 && checkIndex == 0) {
+        showGuess();
+        console.log("You have lost...The winning word was: " + randomWord);
+
+        init();
+    } else if (checkIndex == 0) {
+        if (lettersUsed.indexOf(letter) == -1 || (guessesRemaining === totalGuesses)) {
+
+            // console.log("letter not typed already or first time" + lettersUsed.indexOf(letter));
+            lettersUsed.push(letter);
+            console.log("Incorrecr - try again!");
+            guessesRemaining--;
+            var win = false;
+
         }
-      } //end if
-    }); // end .then
+    }
 
 
+
+    return false;
+
+}
+
+// show guess in div guess
+function showGuess() {
+    var guessString = "";
+    for (var i = 0; i < guessWord.length; i++) {
+        guessString = guessString + guessWord[i] + ",";
+    }
+    console.log("Word : " + guessString.substring(0, guessString.length - 1));
+    //console.log(" Guesses Remaining: " + guessesRemaining);
+    if (guessWord.join("") == randomWord) {
+        winCntr++;
+        guessesRemaining = totalGuesses;
+        //console.log(" Guesses Remaining: " + guessesRemaining);
+        console.log("Well Done...The winning word was: " + randomWord);
+        init();
+
+    }
+
+}
+
+// called when reset button clicked
+// function resetButton() {
+//     console.log("resetting");
+
+//     init();
+// }
+
+function getUserLetter() {
+    // show guessWord here come back to it
     
-} //end init
+    inquirer
+        .prompt({
+            name: "letter",
+            type: "input",
+            message: "Make a guess by typing in any letter!"
+        })
+        .then(function (answer) {
+            var userLetter = answer.letter;
+            checkLetter(userLetter);
+            // console.log("chosen random word is " + randomWord);
+            // populate guessWord with dashes 
+            
+            // showGuess();
+            console.log(" Guesses Remaining: " + guessesRemaining);
+            getUserLetter();
+        }); // end .then
+      
+};
+
+// Begin //
+function init() {
+    guessWord = [];
+    lettersUsed = [];
+    letter = "";
+    guessesRemaining = totalGuesses;
+    randomWord = pickword();
+    // console.log("chosen random word is " + randomWord);
+    console.log(" Number of Wins: " + winCntr);
+    
+   
+    for (var i = 0; i < randomWord.length; i++) {
+        guessWord.push('_');
+    }
+    // console.log("guessWOrd is " + guessWord);
+}
+
+init();
+getUserLetter();
