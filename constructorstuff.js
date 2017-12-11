@@ -4,7 +4,9 @@
 
 function User(n) {
     this.name = n;
+    
 }
+
 var phil = new User('Phil');
 
 // while the prototype describes the behavior
