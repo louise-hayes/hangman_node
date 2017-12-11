@@ -29,7 +29,7 @@ function checkLetter(letter) {
         // }
 
         IsLetterInRandomWord(letter, 0);
-        
+
         showGuess();
 
         lettersUsed.push(letter);
@@ -38,8 +38,9 @@ function checkLetter(letter) {
 
 }
 
-// Is player letter in randomWord
+// Is player letter in randomWord - recursive function
 function IsLetterInRandomWord(letter, checkIndex) {
+
     // check for falsey which is if its first letter of the randomWord so index 0
 
     if (checkIndex < randomWord.length && randomWord.indexOf(letter, checkIndex) !== -1) {
@@ -61,17 +62,19 @@ function IsLetterInRandomWord(letter, checkIndex) {
 
         IsLetterInRandomWord(letter, checkIndex + 1);
         return true;
+
     } else if (guessesRemaining == 1 && checkIndex == 0) {
         showGuess();
         console.log("You have lost...The winning word was: " + randomWord);
 
-        init();
+        init(); //restart game
+
     } else if (checkIndex == 0) {
         if (lettersUsed.indexOf(letter) == -1 || (guessesRemaining === totalGuesses)) {
 
             // console.log("letter not typed already or first time" + lettersUsed.indexOf(letter));
             lettersUsed.push(letter);
-            console.log("Incorrecr - try again!");
+            console.log("Sorry - you are Incorrect - try again!");
             guessesRemaining--;
             var win = false;
 
@@ -117,17 +120,19 @@ function getUserLetter() {
         .prompt({
             name: "letter",
             type: "input",
-            message: "Make a guess by typing in any letter!"
-    
+            message: "Make a guess by typing in any letter!",
+            validate: function(letter){
+                return letter !== "" 
+            }
         })
         .then(function (answer) {
+            console.log(letter);
             var userLetter = new Letters(answer.letter);
             var uppercaseletter = userLetter.toUpperLetter();
             console.log(uppercaseletter);
             checkLetter(uppercaseletter);
             // console.log("chosen random word is " + randomWord);
             // populate guessWord with dashes 
-
             // showGuess();
             console.log(" Guesses Remaining: " + guessesRemaining);
             getUserLetter();
@@ -145,7 +150,7 @@ function init() {
     randomWord = randomwordFunc.pickWord();
 
     // console.log("chosen random word is " + randomWord);
-    console.log(" Number of Wins: " + winCntr);
+    console.log("Wins: " + winCntr);
 
     for (var i = 0; i < randomWord.length; i++) {
         guessWord.push('_');
